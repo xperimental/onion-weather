@@ -81,18 +81,23 @@ func updateDisplay(client *netatmo.Client, display textDisplay) error {
 }
 
 func displayDevice(display textDisplay, device netatmo.Device) {
-	date := time.Unix(*device.DashboardData.LastMesure, 0)
-	dateString := date.Format("15:04:05")
-	writeLine(display, fmt.Sprintf("%s @ %s", device.ModuleName, dateString))
+	writeLine(display, fmt.Sprintf("%s @ %s", device.ModuleName, dateString(device.DashboardData)))
 	writeLine(display, fmt.Sprintf("  %.1f C - %d %%", *device.DashboardData.Temperature, *device.DashboardData.Humidity))
 	writeLine(display, fmt.Sprintf("  %d ppm", *device.DashboardData.CO2))
 }
 
 func displayModule(display textDisplay, module netatmo.Device) {
-	date := time.Unix(*module.DashboardData.LastMesure, 0)
-	dateString := date.Format("15:04:05")
-	writeLine(display, fmt.Sprintf("%s @ %s", module.ModuleName, dateString))
+	writeLine(display, fmt.Sprintf("%s @ %s", module.ModuleName, dateString(module.DashboardData)))
 	writeLine(display, fmt.Sprintf("  %.1f C - %d %%", *module.DashboardData.Temperature, *module.DashboardData.Humidity))
+}
+
+func dateString(data netatmo.DashboardData) string {
+	date := time.Unix(*data.LastMesure, 0)
+	if time.Since(date) > 2*time.Hour {
+		return "inactive"
+	}
+
+	return date.Format("15:04:05")
 }
 
 func writeLine(display textDisplay, line string) {
