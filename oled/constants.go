@@ -1,6 +1,7 @@
 package oled
 
 const (
+	i2CDevPath  = "/dev/i2c-%d"
 	i2CDevNum   = 0
 	i2COledAddr = 0x3C
 
