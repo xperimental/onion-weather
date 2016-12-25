@@ -9,12 +9,13 @@ import (
 type displayLine []rune
 
 type dummyDisplay struct {
-	out     *bufio.Writer
-	row     int
-	col     int
-	width   int
-	height  int
-	display []displayLine
+	out      *bufio.Writer
+	row      int
+	col      int
+	width    int
+	height   int
+	display  []displayLine
+	inverted bool
 }
 
 func NewDummyDisplay(rows, cols int, out io.Writer) *dummyDisplay {
@@ -64,6 +65,11 @@ func (d *dummyDisplay) Write(text string) error {
 	return d.showDisplay()
 }
 
+func (d *dummyDisplay) SetDisplayInverted(inverted bool) error {
+	d.inverted = inverted
+	return d.showDisplay()
+}
+
 func (d *dummyDisplay) nextLine() {
 	d.col = 0
 	d.row++
@@ -83,7 +89,11 @@ func (d *dummyDisplay) showDisplay() error {
 	for _, l := range d.display {
 		d.out.WriteRune('#')
 		for _, r := range l {
-			d.out.WriteRune(r)
+			if r == ' ' && d.inverted {
+				d.out.WriteRune('#')
+			} else {
+				d.out.WriteRune(r)
+			}
 		}
 		d.out.WriteString("#\n")
 	}

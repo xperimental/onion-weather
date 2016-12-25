@@ -14,6 +14,7 @@ import (
 type textDisplay interface {
 	Clear() error
 	Write(text string) error
+	SetDisplayInverted(bool) error
 }
 
 func main() {
@@ -41,10 +42,14 @@ func main() {
 	}
 
 	log.Println("Starting update loop...")
+	inverted := true
 	for {
 		if err := updateDisplay(client, display); err != nil {
 			log.Printf("Error updating display: %s", err)
 		}
+
+		inverted = !inverted
+		display.SetDisplayInverted(inverted)
 		<-time.After(cfg.UpdateInterval)
 	}
 }
