@@ -1,0 +1,15 @@
+#!/bin/sh /etc/rc.common
+# Init script for putting into /etc/init.d/ on Onion Omega.
+START=99
+STOP=10
+
+USE_PROCD=1
+BIN="/root/onion-weather"
+OPT="-c /etc/onion-weather.json"
+
+start_service() {
+    procd_open_instance
+    procd_set_param command $BIN $OPT
+    procd_set_param respawn
+    procd_close_instance
+}

@@ -1,0 +1,9 @@
+{
+    "netatmo": {
+        "ClientID": "<client-id>",
+        "ClientSecret": "<client-secret>",
+        "Username": "<email-address>",
+        "Password": "<password>"
+    },
+    "updateInterval": 900000000000
+}
