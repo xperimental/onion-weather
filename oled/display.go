@@ -19,8 +19,8 @@ type Display interface {
 
 	// SetDisplaPower toggles the display on or off.
 	SetDisplayPower(powered bool) error
-	// SetDisplayMode toggles the display between normal and inverted mode.
-	SetDisplayMode(inverted bool) error
+	// SetDisplayInverted toggles the display between normal and inverted mode.
+	SetDisplayInverted(inverted bool) error
 	// SetBrightness sets the brightness of the display (default is 207).
 	SetBrightness(brightness uint8) error
 	// SetDim toggles the display between dim (0) and default (207) brightness.
@@ -47,8 +47,6 @@ type Display interface {
 	int oledClear ();
 	int oledWriteChar (char c);
 	int oledWrite (char *msg);
-
-	existing:
 	int oledSetDisplayPower	(int bPowerOn);
 	int oledSetBrightness (int brightness);
 	int oledSetDim (int dim);

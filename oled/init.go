@@ -83,7 +83,7 @@ func (o *oled) Init() error {
 	}
 	time.Sleep(4500 * time.Microsecond)
 
-	if err := o.SetDisplayMode(false); err != nil {
+	if err := o.SetDisplayInverted(false); err != nil {
 		return err
 	}
 
