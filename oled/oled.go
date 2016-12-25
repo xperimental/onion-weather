@@ -1,4 +1,5 @@
-package main
+// Package oled can be used to access the OLED expansion on an Onion Omega.
+package oled
 
 import (
 	"fmt"
@@ -11,6 +12,7 @@ const (
 	i2CDevPath = "/dev/i2c-%d"
 )
 
+// Oled can be used to access the OLED expansion on an Onion Omega.
 type Oled struct {
 	dev        *i2c.Device
 	vccState   uint8
@@ -23,6 +25,7 @@ type Oled struct {
 	bColumnsSetForText bool
 }
 
+// NewOled creates a new Oled struct connected to I2C.
 func NewOled() (*Oled, error) {
 	path := fmt.Sprintf(i2CDevPath, i2CDevNum)
 	dev, err := i2c.Open(&i2c.Devfs{Dev: path}, i2COledAddr)
@@ -35,6 +38,7 @@ func NewOled() (*Oled, error) {
 	}, nil
 }
 
+// Init initializes and clears the display.
 func (o *Oled) Init() error {
 	o.vccState = OLED_EXP_SWITCH_CAP_VCC
 
@@ -127,6 +131,7 @@ func (o *Oled) Init() error {
 	return nil
 }
 
+// SetDisplayMode can toggle the display between normal and inverted mode.
 func (o *Oled) SetDisplayMode(inverted bool) error {
 	cmd := OLED_EXP_NORMAL_DISPLAY
 	if inverted {
@@ -136,6 +141,7 @@ func (o *Oled) SetDisplayMode(inverted bool) error {
 	return sendCommand(o.dev, cmd)
 }
 
+// Clear clears the display.
 func (o *Oled) Clear() error {
 	// set the column addressing for the full width
 	if err := o.SetImageColumns(); err != nil {
@@ -169,6 +175,7 @@ func (o *Oled) Clear() error {
 	return o.SetCursor(0, 0)
 }
 
+// SetTextColumns sets the display column addressing to text mode.
 func (o *Oled) SetTextColumns() error {
 	// set the column addressing for text mode
 	if err := o.SetColumnAddressing(0, OLED_EXP_CHAR_COLUMN_PIXELS-1); err != nil {
@@ -179,6 +186,7 @@ func (o *Oled) SetTextColumns() error {
 	return nil
 }
 
+// SetImageColumns sets the display column addressing to full width.
 func (o *Oled) SetImageColumns() error {
 	// set the column addressing to full width
 	if err := o.SetColumnAddressing(0, OLED_EXP_WIDTH-1); err != nil {
@@ -189,6 +197,7 @@ func (o *Oled) SetImageColumns() error {
 	return nil
 }
 
+// SetColumnAddressing sets the display column addressing.
 func (o *Oled) SetColumnAddressing(startPixel, endPixel uint8) error {
 	// check the inputs
 	if startPixel < 0 || startPixel >= OLED_EXP_WIDTH || startPixel >= endPixel {
@@ -212,6 +221,7 @@ func (o *Oled) SetColumnAddressing(startPixel, endPixel uint8) error {
 	return nil
 }
 
+// SetCursor positions the cursor at the specified row and column.
 func (o *Oled) SetCursor(row, column uint8) error {
 	// check the inputs
 	if row < 0 || row >= OLED_EXP_CHAR_ROWS {
@@ -237,6 +247,7 @@ func (o *Oled) SetCursor(row, column uint8) error {
 	return nil
 }
 
+// Write draws text on the display.
 func (o *Oled) Write(text string) error {
 	// set addressing mode to page
 	//oledSetMemoryMode(OLED_EXP_MEM_PAGE_ADDR_MODE);	// want automatic newlines enabled
@@ -269,6 +280,7 @@ func (o *Oled) Write(text string) error {
 	return o.SetImageColumns()
 }
 
+// WriteChar draws a single character on the display.
 func (o *Oled) WriteChar(char rune) error {
 	// ensure character is in the table
 	buf := mapASCII(char)

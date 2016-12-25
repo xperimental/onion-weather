@@ -1,9 +1,13 @@
 package main
 
-import "log"
+import (
+	"log"
+
+	"github.com/xperimental/onion-weather/oled"
+)
 
 func main() {
-	oled, err := NewOled()
+	oled, err := oled.NewOled()
 	if err != nil {
 		log.Fatalf("Error opening OLED device: %s", err)
 	}

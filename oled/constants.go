@@ -1,4 +1,4 @@
-package main
+package oled
 
 const (
 	i2CDevNum   = 0
