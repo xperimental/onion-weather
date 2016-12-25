@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"os"
 	"time"
 
@@ -9,6 +11,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
+// Config contains the application configuration.
 type Config struct {
 	Netatmo        netatmo.Config `json:"netatmo"`
 	UpdateInterval time.Duration  `json:"updateInterval"`
@@ -16,8 +19,11 @@ type Config struct {
 	ConfigFile     string         `json:"-"`
 }
 
-func parseConfig() (Config, error) {
-	var config Config
+const (
+	minimumUpdateInterval = 30 * time.Second
+)
+
+func parseConfig() (config Config, err error) {
 	pflag.StringVarP(&config.Netatmo.ClientID, "client-id", "i", "", "Client ID for NetAtmo app.")
 	pflag.StringVarP(&config.Netatmo.ClientSecret, "client-secret", "s", "", "Client secret for NetAtmo app.")
 	pflag.StringVarP(&config.Netatmo.Username, "username", "u", "", "Username of NetAtmo account.")
@@ -28,7 +34,30 @@ func parseConfig() (Config, error) {
 	pflag.Parse()
 
 	if len(config.ConfigFile) > 0 {
-		return readConfig(config.ConfigFile)
+		config, err = readConfig(config.ConfigFile)
+		if err != nil {
+			return config, err
+		}
+	}
+
+	if len(config.Netatmo.ClientID) == 0 {
+		return config, errors.New("need a NetAtmo client ID")
+	}
+
+	if len(config.Netatmo.ClientSecret) == 0 {
+		return config, errors.New("need a NetAtmo client secret")
+	}
+
+	if len(config.Netatmo.Username) == 0 {
+		return config, errors.New("username can not be blank")
+	}
+
+	if len(config.Netatmo.Password) == 0 {
+		return config, errors.New("password can not be blank")
+	}
+
+	if config.UpdateInterval < minimumUpdateInterval {
+		return config, fmt.Errorf("update interval too short (min %s): %s", minimumUpdateInterval, config.UpdateInterval)
 	}
 
 	return config, nil
