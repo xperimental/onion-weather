@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	netatmo "github.com/exzz/netatmo-api-go"
@@ -96,7 +97,8 @@ func displayModule(display textDisplay, module netatmo.Device) {
 
 func writeLine(display textDisplay, line string) {
 	if len(line) < 21 {
-		line += "\n"
+		fill := strings.Repeat(" ", 21-len(line))
+		line += fill
 	}
 
 	if err := display.Write(line); err != nil {
