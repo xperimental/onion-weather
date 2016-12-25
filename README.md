@@ -21,7 +21,9 @@ If you do not have a matching Go installation you can download a pre-built binar
 
 ### Install on device
 
-Now you need to copy the binary to your Omega, for example using `scp`. There is also an [init-script](_contrib/onion-weather) and an [empty configuration file](_contrib/onion-weather.json) in the repository. Place the script in `/etc/init.d`.
+Now you need to copy the binary to your Omega, for example using `scp`.
+
+There is also an [init-script](_contrib/onion-weather) and an [empty configuration file](_contrib/onion-weather.json) in the repository. Place the script in `/etc/init.d`. The script expects the binary in `/usr/sbin`, either put the binary there or adjust the script.
 
 Put your client credentials and your username and password into the configuration file and place it in `/etc/onion-weather.json` on the device.
 

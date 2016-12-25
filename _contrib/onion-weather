@@ -4,7 +4,7 @@ START=99
 STOP=10
 
 USE_PROCD=1
-BIN="/root/onion-weather"
+BIN="/usr/sbin/onion-weather"
 OPT="-c /etc/onion-weather.json"
 
 start_service() {
