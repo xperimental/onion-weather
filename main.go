@@ -97,7 +97,7 @@ func dateString(data netatmo.DashboardData) string {
 		return "inactive"
 	}
 
-	return date.Format("15:04:05")
+	return date.Local().Format("15:04:05")
 }
 
 func writeLine(display textDisplay, line string) {
